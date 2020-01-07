@@ -1,0 +1,4 @@
+main.cpp:189:6:void SystemClock_Config()	104	static
+main.cpp:366:6:void Error_Handler()	0	static
+led_strip_ws2811.h:136:6:void LED_STRIP_WS2811<NUM_LEDS>::display() [with short unsigned int NUM_LEDS = 50]	24	static,ignoring_inline_asm
+main.cpp:72:5:int main()	232	static
