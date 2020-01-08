@@ -52,8 +52,8 @@ Led-Strip.list \
 all: Led-Strip.elf secondary-outputs
 
 # Tool invocations
-Led-Strip.elf: $(OBJS) $(USER_OBJS) D:\Documents\code\Led-Strip\STM32F072RBTX_FLASH.ld
-	arm-none-eabi-g++ -o "Led-Strip.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"D:\Documents\code\Led-Strip\STM32F072RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Led-Strip.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Led-Strip.elf: $(OBJS) $(USER_OBJS) D:\code\stm32-ws2811-strip\STM32F072RBTX_FLASH.ld
+	arm-none-eabi-g++ -o "Led-Strip.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"D:\code\stm32-ws2811-strip\STM32F072RBTX_FLASH.ld" -Wl,-Map="Led-Strip.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -12,16 +12,6 @@
 extern "C" {
 #endif
 //C Public Constants
-//TODO: make this only change timer_freq
-/**
- * @brief This is the frequency of the timer to be passed to this object and if this changes the timer tick values should also change
- */
-#define TIMER_FREQ 48E6
-/*
- * @brief These values are in timer ticks
- */
-#define T0H 1
-#define T1H 11
 //C Public Variables
 
 //C Public Function Prototypes
@@ -37,10 +27,9 @@ class LED_STRIP_WS2811
 {
 public:
 //Constructors
-LED_STRIP_WS2811(TIM_HandleTypeDef* tim_ptr)
+LED_STRIP_WS2811()
 {
 	this->lastLedChanged = NUM_LEDS - 1;
-	this->tim_ptr = tim_ptr;
 }
 //Public Function Prototypes
 void writeEntireStrip(uint8_t red, uint8_t green, uint8_t blue);
@@ -69,7 +58,6 @@ struct LED_NODE
 //Private Constants
 //Private Variables
 int16_t lastLedChanged;
-TIM_HandleTypeDef* tim_ptr;
 LED_NODE leds[NUM_LEDS];
 //Private Function Prototypes
 inline void outputByte(uint8_t byte);
@@ -81,15 +69,36 @@ inline void outputLedNode(LED_NODE& node);
 template<uint16_t NUM_LEDS>
 inline void LED_STRIP_WS2811<NUM_LEDS>::outputBit(bool high_nlow)
 {
+	  __asm(
+			  ".syntax unified\n\t"
+			  "MOV r0, %[gpio_odr]\n\t"
+			  "LDR r1, [r0]\n\t"
+			  "ORRS r1, r1, %[gpio_pin]\n\t"
+			  "STR r1, [r0]\n\t"
+			  :
+			  : [gpio_odr] "r" (&DATA_OUT_GPIO_Port->ODR), [gpio_pin] "r" (DATA_OUT_Pin));
 	if(high_nlow)
 	{
-		this->tim_ptr->Instance->CCR1 = T1H;
+		  __asm(
+				  ".syntax unified\n\t"
+				  "LDR r0, =4\n\t"
+				  "DELAY_LOOP1:\n\t"
+				  "SUBS r0, #1\n\t"
+				  "BNE DELAY_LOOP1\n\t");
 	}else{
-		this->tim_ptr->Instance->CCR1 = T0H;
 	}
-	//Wait until the previous pwm stops
-	while(this->tim_ptr->Instance->CR1 & TIM_CR1_CEN);
-	this->tim_ptr->Instance->CR1 |= TIM_CR1_CEN;
+	  __asm(
+			  ".syntax unified\n\t"
+			  "MOV r0, %[gpio_odr]\n\t"
+			  "LDR r1, [r0]\n\t"
+			  "ANDS r1, r1, %[gpio_pin]\n\t"
+			  "STR r1, [r0]\n\t"
+			  "LDR r0, =15\n\t"
+			  "DELAY_LOOP3:\n\t"
+			  "SUBS r0, #1\n\t"
+			  "BNE DELAY_LOOP3\n\t"
+			  :
+			  : [gpio_odr] "r" (&DATA_OUT_GPIO_Port->ODR), [gpio_pin] "r" (~DATA_OUT_Pin));
 }
 
 template<uint16_t NUM_LEDS>
@@ -140,23 +149,15 @@ void LED_STRIP_WS2811<NUM_LEDS>::display()
 	//Write the changed leds
 	if(lastLedChanged < NUM_LEDS)
 	{
-		//Set first CC value
-//		this->tim_ptr->Instance->SR &= ~TIM_SR_UIF;
-//		this->tim_ptr->Instance->CCR1 = ((leds[0].blue & 0x80) ? T1H : T0H);
-//		this->tim_ptr->Instance->EGR = TIM_EGR_UG;
-		this->tim_ptr->Instance->CCR1 = 0;
-		this->tim_ptr->Instance->CR1 |= TIM_CR1_CEN;
 		for(int16_t i = 0; i <= lastLedChanged; i++)
 		{
 			this->outputLedNode(leds[i]);
 		}
 	}
-	this->tim_ptr->Instance->CCR1 = 0;
-	this->tim_ptr->Instance->EGR = TIM_EGR_UG;
-	this->lastLedChanged = -1;
+	//Latch data
+	HAL_Delay(1);
 	//Reenable interrupts
 	__enable_irq();
-	HAL_Delay(1);
 }
 
 #endif //End Header Guard

@@ -1,4 +1,12 @@
-main.cpp:189:6:void SystemClock_Config()	104	static
-main.cpp:366:6:void Error_Handler()	0	static
-led_strip_ws2811.h:136:6:void LED_STRIP_WS2811<NUM_LEDS>::display() [with short unsigned int NUM_LEDS = 50]	24	static,ignoring_inline_asm
-main.cpp:72:5:int main()	232	static
+main.cpp:69:5:int main()	176	static
+main.cpp:185:6:void SystemClock_Config()	112	static
+main.cpp:225:13:void MX_USART2_UART_Init()	8	static
+main.cpp:260:13:void MX_GPIO_Init()	48	static
+main.cpp:302:6:void Error_Handler()	8	static
+led_strip_ws2811.h:40:1:LED_STRIP_WS2811<NUM_LEDS>::LED_STRIP_WS2811() [with short unsigned int NUM_LEDS = 50]	24	static
+led_strip_ws2811.h:133:6:void LED_STRIP_WS2811<NUM_LEDS>::writeEntireStrip(uint8_t, uint8_t, uint8_t) [with short unsigned int NUM_LEDS = 50]	32	static
+led_strip_ws2811.h:155:6:void LED_STRIP_WS2811<NUM_LEDS>::display() [with short unsigned int NUM_LEDS = 50]	32	static,ignoring_inline_asm
+led_strip_ws2811.h:58:2:LED_STRIP_WS2811<NUM_LEDS>::LED_NODE::LED_NODE(uint8_t, uint8_t, uint8_t) [with short unsigned int NUM_LEDS = 50]	24	static
+led_strip_ws2811.h:124:13:void LED_STRIP_WS2811<NUM_LEDS>::outputLedNode(LED_STRIP_WS2811<NUM_LEDS>::LED_NODE&) [with short unsigned int NUM_LEDS = 50]	16	static
+led_strip_ws2811.h:115:13:void LED_STRIP_WS2811<NUM_LEDS>::outputByte(uint8_t) [with short unsigned int NUM_LEDS = 50]	32	static
+led_strip_ws2811.h:80:13:void LED_STRIP_WS2811<NUM_LEDS>::outputBit(bool) [with short unsigned int NUM_LEDS = 50]	16	static,ignoring_inline_asm
